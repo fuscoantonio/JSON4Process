@@ -64,6 +64,7 @@ This module stringifies properties of these data types:
     }
 ```
 **Usage with child_process fork** 
+
 After having stringified the object's properties it's ready to be sent as data to a child process.
 ```javascript
     const child = fork('filename.js');
@@ -78,6 +79,7 @@ And so we can "objectify" back all object properties in the newly spawned proces
 ```
 
 **Usage with spawn or exec**
+
 Since we need to stringify the whole object, we first stringify each property with JSON4Process and then we stringify the object itself.
 ```javascript
     //obj is the object in the first example in "Basic usage" at the top of this document
