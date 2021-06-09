@@ -70,7 +70,7 @@ After having stringified the object's properties it's ready to be sent as data t
     const child = fork('filename.js');
     child.send(convertedObj); //convertedObj is the stringified object in the example above
 ```
-And so we can "objectify" back all object properties in the newly spawned process, like so
+And so we can "objectify" back all object properties in the newly spawned process, like so:
 ```javascript
     process.on('message', (data) => {
         let newData = JSON4Process.objectifyProps(data);
@@ -86,7 +86,7 @@ Since we need to stringify the whole object, we first stringify each property wi
     let convertedObj = JSON.stringify(JSON4Process.stringifyProps(obj));
     const child = spawn('node', ['filename.js', convertedObj]);
 ```
-Now we can "objectify" object's properties in the spawned process
+Now we can "objectify" object's properties in the spawned process.
 ```javascript
     let newData = JSON4Process.objectifyProps(JSON.parse(process.argv[2]));
 ```
