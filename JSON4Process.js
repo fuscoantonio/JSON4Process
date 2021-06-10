@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-const objectify = (obj, start = true) => {
+const parse = (obj, start = true) => {
     let newObj = obj;
     if (start)
         newObj = _.cloneDeep(obj);
@@ -17,7 +17,7 @@ const objectify = (obj, start = true) => {
             let funcBody = func.split(' ').slice(1).join(' ');
             newObj[prop] = new Function(...params, funcBody);
         } else if (typeof newObj[prop] === 'object') {
-            objectify(newObj[prop], false);
+            parse(newObj[prop], false);
         }
     }
 
@@ -28,8 +28,8 @@ const objectify = (obj, start = true) => {
  * Returns an object with all properties previously stringified changed back to their original data type (Function, Date, RegExp).
  * @param {{}} obj A JavaScript object to be converted.
  */
-const objectifyProps = (obj) => {
-    return objectify(obj);
+const parseProps = (obj) => {
+    return parse(obj);
 }
 
 
@@ -93,5 +93,5 @@ const stringifyProps = (obj) => {
 
 module.exports = {
     stringifyProps,
-    objectifyProps
+    parseProps
 }
