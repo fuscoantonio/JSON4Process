@@ -88,9 +88,12 @@ const getFunction = (funcStr) => {
 
 const getRegex = (str) => {
     try {
-        let regex = str.slice(1, str.lastIndexOf('/'));
-        let flags = str.slice(str.lastIndexOf('/') + 1);
-        return new RegExp(regex, flags);
+        let lastCharsAreFlags = str.slice(str.lastIndexOf('/') + 1).split('').every(letter => letter.match(/[gimsuy]/));
+        if (str.charAt(0) === '/' && str.lastIndexOf('/') !== 0 && lastCharsAreFlags) {
+            let regex = str.slice(1, str.lastIndexOf('/'));
+            let flags = str.slice(str.lastIndexOf('/') + 1);
+            return new RegExp(regex, flags);
+        }
     } catch (err) { }
 }
 
