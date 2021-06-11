@@ -1,8 +1,8 @@
 # JSON4Process
 
-[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.14-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
-[![npm](https://img.shields.io/badge/npm-v.0.1.14-red.svg)](https://www.npmjs.com/package/json4process)  
-A simple module to modify an object's properties of types such as Function, Date, RegExp and more to strings and back to their original data type while maintaining the object's structure. Useful when sending objects as data to forked and spawned child processes.   
+[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.15-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
+[![npm](https://img.shields.io/badge/npm-v.0.1.15-red.svg)](https://www.npmjs.com/package/json4process)  
+A simple module to modify an object's properties of types such as Function, Date, RegExp and more to strings and back to their original data type while maintaining the object's structure. Useful for preventing data loss when sending objects to forked and spawned child processes.   
 
 This module stringifies properties of these data types:
   - **Function**
