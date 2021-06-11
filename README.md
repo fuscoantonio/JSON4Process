@@ -1,7 +1,7 @@
 # JSON4Process
 
-[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.16-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
-[![npm](https://img.shields.io/badge/npm-v.0.1.16-red.svg)](https://www.npmjs.com/package/json4process)  
+[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.17-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
+[![npm](https://img.shields.io/badge/npm-v.0.1.17-red.svg)](https://www.npmjs.com/package/json4process)  
 A simple module to modify an object's properties of types such as Function, Date, RegExp and more to strings and back to their original data type while maintaining the object's structure. Useful for preventing data loss when sending objects to forked and spawned child processes.   
 
 This module stringifies properties of these data types:
@@ -79,7 +79,29 @@ And so we can parse back all object properties in the newly spawned process, lik
 ```javascript
     process.on('message', (data) => {
         let originalObj = JSON4Process.parseProps(data);
-        //Properties like Date, Function, etc. are back to their data type and can now be used as such
+        //result
+        {
+            name: 'Jack',
+            dateOfBirth: 2021-06-11T12:11:45.167Z,
+            regex: /something/g,
+            func: [Function (anonymous)],
+            parents: [
+                {
+                name: 'John',
+                dateOfBirth: 2021-06-11T12:11:45.167Z,
+                regex: /nothing/,
+                set: [Set],
+                func: [Function (anonymous)]
+                },
+                {
+                name: 'Hannah',
+                dateOfBirth: 2021-06-11T12:11:45.167Z,
+                regex: /anything/i,
+                map: [Map],
+                func: [Function (anonymous)]
+                }
+            ]
+        }
     });
 ```
 

@@ -71,7 +71,7 @@ const getFunctionBody = (func) => {
     } catch (err) { // normal function
         func = '(' + func + ')';
         try {
-            eval(func)
+            eval(func);
         } catch (err) { // object method
             func = '(function ' + func.slice(1);
             try {
