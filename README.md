@@ -1,7 +1,7 @@
 # JSON4Process
 
-[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.19-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
-[![npm](https://img.shields.io/badge/npm-v.0.1.19-red.svg)](https://www.npmjs.com/package/json4process)  
+[![GitHub](https://img.shields.io/badge/GitHub-v.0.2.2-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
+[![npm](https://img.shields.io/badge/npm-v.0.2.2-red.svg)](https://www.npmjs.com/package/json4process)  
 A simple module to modify an object's properties of types such as Function, Date, RegExp and more to strings and back to their original data type while maintaining the object's structure. Useful for preventing data loss when sending objects to forked and spawned child processes.   
 
 This module stringifies properties of these data types:
@@ -47,23 +47,25 @@ This module stringifies properties of these data types:
     //result
     {
         name: 'Jack',
-        dateOfBirth: '2021-06-11T14:07:19.210Z',
-        regex: '/something/g',
-        func: "() => { console.log('something') }",
+        dateOfBirth: '[Date instance]2021-06-11T18:48:22.834Z',
+        regex: '[RegExp instance]/something/g',
+        func: "[Function instance]() => { console.log('something') }",
         parents: [
             {
                 name: 'John',
-                dateOfBirth: '2021-06-11T14:07:19.210Z',
-                regex: '/nothing/',
-                set: '[object Set][1,2,3,4]',
-                func: 'function (param) {\r\n                return param + 2;\r\n            }'
+                dateOfBirth: '[Date instance]2021-06-11T18:48:22.834Z',
+                regex: '[RegExp instance]/nothing/',
+                set: '[Set instance][1,2,3,4]',
+                func: '[Function instance]function (param) {\r\n' +
+                    '                return param + 2;\r\n' +
+                    '            }'
             },
             {
                 name: 'Hannah',
-                dateOfBirth: '2021-06-11T14:07:19.210Z',
-                regex: '/anything/i',
-                map: '[object Map]{"one":1,"two":2}',
-                func: '(param, param2) => param + param2'
+                dateOfBirth: '[Date instance]2021-06-11T18:48:22.834Z',
+                regex: '[RegExp instance]/anything/i',
+                map: '[Map instance]{"one":1,"two":2}',
+                func: '[Function instance](param, param2) => param + param2'
             }
         ]
     }
@@ -96,4 +98,4 @@ Now we can parse object's properties in the spawned process.
     let originalObj = JSON4Process.parseProps(JSON.parse(process.argv[2]));
 ```
 
-**author:** [@fuscoantonio](https://github.com/fuscoantonio), antonio.fusco1992@gmail.com
+**author:** [@fuscoantonio](https://github.com/fuscoantonio)

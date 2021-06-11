@@ -7,20 +7,19 @@ const parse = (obj, start = true) => {
 
     for (let prop in newObj) {
         if (typeof newObj[prop] === 'string') {
-            let func = getFunction(newObj[prop]);
-            let regex = getRegex(newObj[prop]);
-            if (func) {
-                newObj[prop] = func;
-            } else if (regex) {
-                newObj[prop] = regex;
-            } else if (newObj[prop].match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\dZ/)) {
-                newObj[prop] = new Date(newObj[prop]);
-            } else if (newObj[prop].startsWith('[object Set]')) {
-                let set = newObj[prop].slice(12);
+            if (newObj[prop].startsWith('[Function instance]')) {
+                newObj[prop] = getFunction(newObj[prop].slice(19));
+            } else if (newObj[prop].startsWith('[RegExp instance]')) {
+                let [regex, flags] = newObj[prop].slice(17).split('/').slice(1);
+                newObj[prop] = new RegExp(regex, flags);
+            } else if (newObj[prop].startsWith('[Date instance]')) {
+                newObj[prop] = new Date(newObj[prop].slice(15));
+            } else if (newObj[prop].startsWith('[Set instance]')) {
+                let set = newObj[prop].slice(14);
                 set = parse(JSON.parse(set));
                 newObj[prop] = new Set(set);
-            } else if (newObj[prop].startsWith('[object Map]')) {
-                let map = newObj[prop].slice(12);
+            } else if (newObj[prop].startsWith('[Map instance]')) {
+                let map = newObj[prop].slice(14);
                 map = Object.entries(parse(JSON.parse(map)));
                 newObj[prop] = new Map(map);
             }
@@ -48,15 +47,15 @@ const stringify = (obj, start = true) => {
 
     for (let prop in newObj) {
         if (newObj[prop] instanceof Date)
-            newObj[prop] = newObj[prop].toISOString();
+            newObj[prop] = '[Date instance]' + newObj[prop].toISOString();
         else if (newObj[prop] instanceof RegExp)
-            newObj[prop] = newObj[prop].toString();
+            newObj[prop] = '[RegExp instance]' + newObj[prop].toString();
         else if (newObj[prop] instanceof Function)
-            newObj[prop] = newObj[prop].toString();
+            newObj[prop] = '[Function instance]' + newObj[prop].toString();
         else if (newObj[prop] instanceof Set)
-            newObj[prop] = '[object Set]' + JSON.stringify(stringify([...newObj[prop]], false));
+            newObj[prop] = '[Set instance]' + JSON.stringify(stringify([...newObj[prop]], false));
         else if (newObj[prop] instanceof Map)
-            newObj[prop] = '[object Map]' + JSON.stringify(stringify(Object.fromEntries(newObj[prop]), false));
+            newObj[prop] = '[Map instance]' + JSON.stringify(stringify(Object.fromEntries(newObj[prop]), false));
         else if (typeof newObj[prop] === 'object')
             stringify(newObj[prop], false);
     }
@@ -86,16 +85,16 @@ const getFunction = (funcStr) => {
     return func;
 }
 
-const getRegex = (str) => {
-    try {
-        let lastCharsAreFlags = str.slice(str.lastIndexOf('/') + 1).split('').every(letter => letter.match(/[gimsuy]/));
-        if (str.charAt(0) === '/' && str.lastIndexOf('/') !== 0 && lastCharsAreFlags) {
-            let regex = str.slice(1, str.lastIndexOf('/'));
-            let flags = str.slice(str.lastIndexOf('/') + 1);
-            return new RegExp(regex, flags);
-        }
-    } catch (err) { }
-}
+// const getRegex = (str) => {
+//     try {
+//         let lastCharsAreFlags = str.slice(str.lastIndexOf('/') + 1).split('').every(letter => letter.match(/[gimsuy]/));
+//         if (str.charAt(0) === '/' && str.lastIndexOf('/') !== 0 && lastCharsAreFlags) {
+//             let regex = str.slice(1, str.lastIndexOf('/'));
+//             let flags = str.slice(str.lastIndexOf('/') + 1);
+//             return new RegExp(regex, flags);
+//         }
+//     } catch (err) { }
+// }
 
 /**
  * Returns an object with all properties converted to strings and ready to be sent to a child process.
