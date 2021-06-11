@@ -8,13 +8,13 @@ const parse = (obj, start = true) => {
     for (let prop in newObj) {
         if (typeof newObj[prop] === 'string') {
             let func = getFunctionBody(newObj[prop]);
+            let regex = getRegex(newObj[prop]);
             if (func) {
                 newObj[prop] = eval(func);
+            } else if (regex) {
+                newObj[prop] = regex;
             } else if (newObj[prop].match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\dZ/)) {
                 newObj[prop] = new Date(newObj[prop]);
-            } else if (newObj[prop].match(/^\/[^\/]+\/([g]?[i]?[m]?[s]?[u]?[y]?)?$/)) {
-                let [regex, flags] = newObj[prop].split('/').slice(1);
-                newObj[prop] = new RegExp(regex, flags);
             } else if (newObj[prop].startsWith('[object Set]')) {
                 let set = newObj[prop].slice(12);
                 set = parse(JSON.parse(set));
@@ -82,6 +82,14 @@ const getFunctionBody = (func) => {
         }
     }
     return func;
+}
+
+const getRegex = (str) => {
+    try {
+        let regex = str.slice(1, str.lastIndexOf('/'));
+        let flags = str.slice(str.lastIndexOf('/') + 1);
+        return new RegExp(regex, flags);
+    } catch (err) { }
 }
 
 /**
