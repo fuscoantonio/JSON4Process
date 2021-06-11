@@ -12,7 +12,7 @@ const parse = (obj, start = true) => {
                 newObj[prop] = eval(func);
             } else if (newObj[prop].match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\dZ/)) {
                 newObj[prop] = new Date(newObj[prop]);
-            } else if (newObj[prop].match(/^\/.+\/[g]?[i]?[m]?[s]?[u]?[y]?$/)) {
+            } else if (newObj[prop].match(/^\/[^\/]+\/([g]?[i]?[m]?[s]?[u]?[y]?)?$/)) {
                 let [regex, flags] = newObj[prop].split('/').slice(1);
                 newObj[prop] = new RegExp(regex, flags);
             } else if (newObj[prop].startsWith('[object Set]')) {
