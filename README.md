@@ -1,13 +1,15 @@
 # JSON4Process
 
-[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.11-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
-[![npm](https://img.shields.io/badge/npm-v.0.1.11-red.svg)](https://www.npmjs.com/package/json4process)  
-A simple module to modify an object's properties of types such as Function, Date or RegExp to strings and back to their original data type while maintaining the object's structure. Useful when sending objects as data to forked and spawned child processes.   
+[![GitHub](https://img.shields.io/badge/GitHub-v.0.1.14-blue.svg)](https://github.com/fuscoantonio/JSON4Process)
+[![npm](https://img.shields.io/badge/npm-v.0.1.14-red.svg)](https://www.npmjs.com/package/json4process)  
+A simple module to modify an object's properties of types such as Function, Date, RegExp and more to strings and back to their original data type while maintaining the object's structure. Useful when sending objects as data to forked and spawned child processes.   
 
 This module stringifies properties of these data types:
   - **Function**
   - **RegExp**
   - **Date**
+  - **Set**
+  - **Map**  
 
 **Import:**
 ```javascript
@@ -16,23 +18,25 @@ This module stringifies properties of these data types:
 **Basic usage:**
 ```javascript
     let obj = {
-    name: 'Jack',
-    dateOfBirth: new Date(),
-    regex: new RegExp(/something/g),
-    func: () => { console.log('something') },
-    parents: [
+        name: 'Jack',
+        dateOfBirth: new Date(),
+        regex: new RegExp(/something/g),
+        func: () => { console.log('something') },
+        parents: [
             {
                 name: 'John',
                 dateOfBirth: new Date(),
                 regex: new RegExp(/nothing/),
+                set: new Set([1, 2, 3, 4]),
                 func: function (param) {
                     return param + 2;
                 }
             },
             {
-                name: 'Ashley',
+                name: 'Hannah',
                 dateOfBirth: new Date(),
                 regex: new RegExp(/anything/i),
+                map: new Map(Object.entries({ one: 1, two: 2 })),
                 func: (param, param2) => param + param2
             }
         ]
@@ -43,23 +47,23 @@ This module stringifies properties of these data types:
     //result
     {
         name: 'Jack',
-        dateOfBirth: '2021-06-09T18:51:12.814Z',
+        dateOfBirth: '2021-06-11T11:01:17.482Z',
         regex: '/something/g',
-        func: "-this_is_a_function-  console.log('something') ",
+        func: "() => { console.log('something') }",
         parents: [
             {
                 name: 'John',
-                dateOfBirth: '2021-06-09T18:51:12.814Z',
+                dateOfBirth: '2021-06-11T11:01:17.482Z',
                 regex: '/nothing/',
-                func: '-this_is_a_function-param \r\n' +
-                    '                return param + 2;\r\n' +
-                    '            '
+                set: '[object Set][1,2,3,4]',
+                func: 'function (param) {\r\n                return param + 2;\r\n            }'
             },
             {
-                name: 'Ashley',
-                dateOfBirth: '2021-06-09T18:51:12.814Z',
+                name: 'Hannah',
+                dateOfBirth: '2021-06-11T11:01:17.482Z',
                 regex: '/anything/i',
-                func: '-this_is_a_function-param,param2 return  param + param2'
+                map: '[object Map]{"one":1,"two":2}',
+                func: '(param, param2) => param + param2'
             }
         ]
     }
@@ -75,7 +79,7 @@ And so we can parse back all object properties in the newly spawned process, lik
 ```javascript
     process.on('message', (data) => {
         let originalObj = JSON4Process.parseProps(data);
-        //Function, Date and RegExp properties are back to their data type and can now be used as such
+        //Properties like Date, Function, etc. are back to their data type and can now be used as such
     });
 ```
 
