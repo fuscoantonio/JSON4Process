@@ -7,10 +7,10 @@ const parse = (obj, start = true) => {
 
     for (let prop in newObj) {
         if (typeof newObj[prop] === 'string') {
-            let func = getFunctionBody(newObj[prop]);
+            let func = getFunction(newObj[prop]);
             let regex = getRegex(newObj[prop]);
             if (func) {
-                newObj[prop] = eval(func);
+                newObj[prop] = func;
             } else if (regex) {
                 newObj[prop] = regex;
             } else if (newObj[prop].match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\dZ/)) {
@@ -64,18 +64,20 @@ const stringify = (obj, start = true) => {
     return newObj;
 }
 
-const getFunctionBody = (func) => {
+const getFunction = (funcStr) => {
+    let func;
     try { //arrow function
-        if (!(eval(func) instanceof Function))
+        func = eval(funcStr);
+        if (!(func instanceof Function))
             throw 'error';
     } catch (err) { // normal function
-        func = '(' + func + ')';
+        funcStr = '(' + funcStr + ')';
         try {
-            eval(func);
+            func = eval(funcStr);
         } catch (err) { // object method
-            func = '(function ' + func.slice(1);
+            funcStr = '(function ' + funcStr.slice(1);
             try {
-                eval(func);
+                func = eval(funcStr);
             } catch (err) { // is not a function
                 func = undefined;
             }
