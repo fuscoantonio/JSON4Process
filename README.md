@@ -97,5 +97,3 @@ Now we can parse object's properties in the spawned process.
 ```javascript
     let originalObj = JSON4Process.parseProps(JSON.parse(process.argv[2]));
 ```
-
-**author:** [@fuscoantonio](https://github.com/fuscoantonio)
