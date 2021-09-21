@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const moment = require('moment');
 
-const parse = (obj, start = true) => {
+const parse = (obj, start) => {
     let newObj = obj;
     if (start)
         newObj = _.cloneDeep(obj);
@@ -27,7 +27,7 @@ const parse = (obj, start = true) => {
                 newObj[prop] = new Map(map);
             }
         } else if (typeof newObj[prop] === 'object') {
-            parse(newObj[prop], false);
+            parse(newObj[prop]);
         }
     }
 
@@ -39,11 +39,11 @@ const parse = (obj, start = true) => {
  * @param {{}} obj A JavaScript object to be converted.
  */
 const parseProps = (obj) => {
-    return parse(obj);
+    return parse(obj, true);
 }
 
 
-const stringify = (obj, start = true) => {
+const stringify = (obj, start) => {
     let newObj = obj;
     if (start)
         newObj = _.cloneDeep(obj);
@@ -58,11 +58,11 @@ const stringify = (obj, start = true) => {
         } else if (newObj[prop] instanceof Function) {
             newObj[prop] = '[Function instance]' + newObj[prop].toString();
         } else if (newObj[prop] instanceof Set) {
-            newObj[prop] = '[Set instance]' + JSON.stringify(stringify([...newObj[prop]], false));
+            newObj[prop] = '[Set instance]' + JSON.stringify(stringify([...newObj[prop]]));
         } else if (newObj[prop] instanceof Map) {
-            newObj[prop] = '[Map instance]' + JSON.stringify(stringify(Object.fromEntries(newObj[prop]), false));
+            newObj[prop] = '[Map instance]' + JSON.stringify(stringify(Object.fromEntries(newObj[prop])));
         } else if (typeof newObj[prop] === 'object') {
-            stringify(newObj[prop], false);
+            stringify(newObj[prop]);
         }
     }
 
@@ -107,7 +107,7 @@ const getFunction = (funcStr) => {
  * @param {{}} obj A JavaScript object to be converted.
  */
 const stringifyProps = (obj) => {
-    return stringify(obj);
+    return stringify(obj, true);
 }
 
 
