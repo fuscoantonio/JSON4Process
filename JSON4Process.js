@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const moment = require('moment');
 
 const parse = (obj, start = true) => {
     let newObj = obj;
@@ -7,13 +8,15 @@ const parse = (obj, start = true) => {
 
     for (let prop in newObj) {
         if (typeof newObj[prop] === 'string') {
-            if (newObj[prop].startsWith('[Function instance]')) {
-                newObj[prop] = getFunction(newObj[prop].slice(19));
+            if (newObj[prop].startsWith('[Date instance]')) {
+                newObj[prop] = new Date(newObj[prop].slice(15));
+            } else if (newObj[prop].startsWith('[Moment instance]')) {
+                newObj[prop] = moment.parseZone(newObj[prop].slice(17));
             } else if (newObj[prop].startsWith('[RegExp instance]')) {
                 let [regex, flags] = newObj[prop].slice(17).split('/').slice(1);
                 newObj[prop] = new RegExp(regex, flags);
-            } else if (newObj[prop].startsWith('[Date instance]')) {
-                newObj[prop] = new Date(newObj[prop].slice(15));
+            } else if (newObj[prop].startsWith('[Function instance]')) {
+                newObj[prop] = getFunction(newObj[prop].slice(19));
             } else if (newObj[prop].startsWith('[Set instance]')) {
                 let set = newObj[prop].slice(14);
                 set = parse(JSON.parse(set));
@@ -46,18 +49,21 @@ const stringify = (obj, start = true) => {
         newObj = _.cloneDeep(obj);
 
     for (let prop in newObj) {
-        if (newObj[prop] instanceof Date)
+        if (newObj[prop] instanceof Date) {
             newObj[prop] = '[Date instance]' + newObj[prop].toISOString();
-        else if (newObj[prop] instanceof RegExp)
+        } else if (newObj[prop] instanceof moment) {
+            newObj[prop] = '[Moment instance]' + newObj[prop].toISOString(true);
+        } else if (newObj[prop] instanceof RegExp) {
             newObj[prop] = '[RegExp instance]' + newObj[prop].toString();
-        else if (newObj[prop] instanceof Function)
+        } else if (newObj[prop] instanceof Function) {
             newObj[prop] = '[Function instance]' + newObj[prop].toString();
-        else if (newObj[prop] instanceof Set)
+        } else if (newObj[prop] instanceof Set) {
             newObj[prop] = '[Set instance]' + JSON.stringify(stringify([...newObj[prop]], false));
-        else if (newObj[prop] instanceof Map)
+        } else if (newObj[prop] instanceof Map) {
             newObj[prop] = '[Map instance]' + JSON.stringify(stringify(Object.fromEntries(newObj[prop]), false));
-        else if (typeof newObj[prop] === 'object')
+        } else if (typeof newObj[prop] === 'object') {
             stringify(newObj[prop], false);
+        }
     }
 
     return newObj;
